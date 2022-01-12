@@ -1,0 +1,73 @@
+﻿@model IEnumerable<WebShopInventory.Models.Product>
+
+@{
+    ViewData["Title"] = "Web Shop Inventory";
+}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-7">
+      <h4 class="navbar-brand">Product List</h4>
+    </div>
+    <div class="col-sm-4 float-right text-right">
+      <div class="form-inline my-2 my-lg-0"> 
+          @using (Html.BeginForm()) { @Html.TextBox("SearchString", null, new {@class = "form-control mr-sm-2"}) 
+          <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search" /> } </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-sm-12">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>          
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.Title)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SKUSortParam"]">@Html.DisplayNameFor(model => model.Code)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stock)
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]">@Html.DisplayNameFor(model => model.Price)</a>
+            </th>
+            <th>
+                Actions
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+             <td>
+                <img src="@("~/uploads/"+item.ImagePath)" asp-append-version="true" width="50px" height="50px" />
+            </td>           
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stock)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+           
+            <td>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Update" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Delete" asp-route-id="@item.Id">Delete</a>                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+</div>
+</div>
