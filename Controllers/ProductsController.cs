@@ -60,7 +60,6 @@ namespace WebShopInventory.Controllers
             return View(await products.AsNoTracking().ToListAsync());
         }
 
-
         /// <summary>
         /// GET: Products/Create
         /// </summary>
@@ -131,7 +130,7 @@ namespace WebShopInventory.Controllers
             {
                 ModelState.TryAddModelError("Code", $"A product with this SKU code {product.Code} is already exists");
             }
-
+        
             if (ModelState.IsValid)
             {
                 try
@@ -140,6 +139,8 @@ namespace WebShopInventory.Controllers
                     {
                         product.ImagePath = await GetImagePath(product);
                     }
+
+                  
 
                     m_context.Products.Update(product);
                     await m_context.SaveChangesAsync();

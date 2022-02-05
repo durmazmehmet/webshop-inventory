@@ -27,12 +27,17 @@ namespace WebShopInventory.Models
         [Required]
         public string Description { get; set; }
 
+        [Display(Name = "Stock Quantity")]
         [Column(Order = 4)]
         [Required]
+        [Range(0, long.MaxValue, ErrorMessage = "Stock can not be negative")]
         public long Stock { get; set; }
 
+        [Display(Name = "Price")]
         [Column(Order = 5)]
         [Required]
+        [DataType(DataType.Currency)]
+        [Range(0, double.MaxValue, ErrorMessage = "Prive can not be negative")]
         public double Price { get; set; }
 
         [Display(Name = "Image")]

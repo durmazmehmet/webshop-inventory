@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "cldrjs": "^0.5.5",
+    "globalize": "^1.7.0",
+    "globalizejs": "^0.0.1",
+    "jquery-validation-globalize": "^0.1.1"
+  }
+}

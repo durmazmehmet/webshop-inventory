@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "cldrjs@0.5.5",
+      "destination": "wwwroot/lib/cldrjs/"
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/",
+      "destination": "wwwroot/lib/"
+    }
+  ]
+}
