@@ -1,13 +1,17 @@
 # webshop-inventory
 rea assassment
 
+# Start Local DB
+
+SqllocalDB.exe start MSSQLLocalDB
+
 # Check Local DB
 
 SqllocalDB.exe i MSSQLLocalDB
 
-# Start Local DB
+# ef yükle
 
-SqllocalDB.exe start MSSQLLocalDB
+dotnet tool install --global dotnet-ef
 
 # Migrate Database
 
