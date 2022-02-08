@@ -1,4 +1,4 @@
-﻿@model WebShopInventory.Models.Product
+﻿@model WebShopInventory.Models.ViewModels.ProductViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -12,51 +12,57 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Code)
+            @Html.DisplayNameFor(model => model.Product.Code)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Code)
+            @Html.DisplayFor(model => model.Product.Code)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Product.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Product.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Product.Description)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Product.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock)
+            @Html.DisplayNameFor(model => model.Product.Stock)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stock)
+            @Html.DisplayFor(model => model.Product.Stock)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.Product.Price)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.Product.Price)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
+            @Html.DisplayNameFor(model => model.Product.ImagePath)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
+            @Html.DisplayFor(model => model.Product.ImagePath)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Timestamp)
+            @Html.DisplayNameFor(model => model.ProductCategory.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Timestamp)
+            @Html.DisplayFor(model => model.ProductCategory.Title)
+        </dd> 
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Timestamp)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Product.Timestamp)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="@Model.Product.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" />
         <a class="btn btn-outline-success me-2" asp-action="Index">Back to List</a>
     </form>

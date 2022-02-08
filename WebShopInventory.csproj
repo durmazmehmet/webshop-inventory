@@ -6,6 +6,9 @@
     <Copyright>Mehmet Durmaz</Copyright>
     <RepositoryUrl>git@github.com:durmazmehmet/webshop-inventory.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <UserSecretsId>ca043b37-a9f3-4f10-92e2-a47d5a3ff7f1</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +33,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
   </ItemGroup>
 
 </Project>

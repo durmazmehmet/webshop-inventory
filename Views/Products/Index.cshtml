@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebShopInventory.Models.Product>
+﻿@model IEnumerable<WebShopInventory.Models.ViewModels.ProductViewModel>
 
 @{
     ViewData["Title"] = "Web Shop Inventory";
@@ -21,19 +21,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
+                @Html.DisplayNameFor(model => model.Product.ImagePath)
             </th>          
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.Title)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.Product.Title)</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["SKUSortParam"]">@Html.DisplayNameFor(model => model.Code)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SKUSortParam"]">@Html.DisplayNameFor(model => model.Product.Code)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Stock)
+                @Html.DisplayNameFor(model => model.Product.Stock)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]">@Html.DisplayNameFor(model => model.Price)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]">@Html.DisplayNameFor(model => model.Product.Price)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategorySortParam"]">@Html.DisplayNameFor(model => model.ProductCategory.Title)</a>
             </th>
             <th>
                 Actions
@@ -45,24 +48,27 @@
 @foreach (var item in Model) {
         <tr>
              <td>
-                <img src="@("~/uploads/"+item.ImagePath)" asp-append-version="true" width="50px" height="50px" />
+                <img src="@("~/uploads/"+item.Product.ImagePath)" asp-append-version="true" width="50px" height="50px" />
             </td>           
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+                <a asp-action="Details" asp-route-id="@item.Product.Id">@Html.DisplayFor(modelItem => item.Product.Title)</a>
             </td>
              <td>
-                @Html.DisplayFor(modelItem => item.Code)
+                @Html.DisplayFor(modelItem => item.Product.Code)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Stock)
+                @Html.DisplayFor(modelItem => item.Product.Stock)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                @Html.DisplayFor(modelItem => item.Product.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductCategory.Title)
             </td>
            
             <td>
-                <a class="btn btn-sm btn-outline-secondary" asp-action="Update" asp-route-id="@item.Id">Edit</a>
-                <a class="btn btn-sm btn-outline-secondary" asp-action="Delete" asp-route-id="@item.Id">Delete</a>                
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Update" asp-route-id="@item.Product.Id">Edit</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Delete" asp-route-id="@item.Product.Id">Delete</a>                
             </td>
         </tr>
 }

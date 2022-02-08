@@ -50,5 +50,11 @@ namespace WebShopInventory.Models
         [NotMapped]
         [Display(Name = "Upload File")]
         public IFormFile ImageFile { get; set; }
+
+        [Display(Name = "Category")]
+        public int ProductCategoryId { get; set; }
+        [ForeignKey("ProductCategoryId")]
+        public virtual ProductCategory ProductCategory { get; set; }
+
     }
 }

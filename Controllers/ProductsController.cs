@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebShopInventory.Data;
 using WebShopInventory.Models;
+using WebShopInventory.Models.ViewModels;
 
 namespace WebShopInventory.Controllers
 {
@@ -16,11 +19,17 @@ namespace WebShopInventory.Controllers
     {
         private readonly ApplicationDbContext m_context;
         private readonly IWebHostEnvironment m_webHostEnvironment;
+        private IEnumerable<SelectListItem> m_selectListItems;
 
         public ProductsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             m_context = context;
             m_webHostEnvironment = webHostEnvironment;
+            m_selectListItems = m_context.ProductCategories.Select(i => new SelectListItem
+            {
+                 Text = i.Title,
+                 Value = i.Id.ToString()
+            });            
         }
 
 
@@ -36,35 +45,50 @@ namespace WebShopInventory.Controllers
             ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["SKUSortParam"] = sortOrder == "SKU" ? "sku_desc" : "SKU";
             ViewData["PriceSortParam"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["CategorySortParam"] = sortOrder == "Category" ? "category_desc" : "Category";
 
             var products = from p in m_context.Products select p;
+            var categories = from c in m_context.ProductCategories select c;     
+
+            var productWithCategory = from p in products
+                                      join c in categories on p.ProductCategoryId equals c.Id
+                                      select new ProductViewModel { Product = p, ProductCategory = c };
+
+            productWithCategory = sortOrder switch
+            {
+                "name_desc" => productWithCategory.OrderByDescending(p => p.Product.Title),
+                "SKU" => productWithCategory.OrderBy(p => p.Product.Code),
+                "sku_desc" => productWithCategory.OrderByDescending(p => p.Product.Code),
+                "Price" => productWithCategory.OrderBy(p => p.Product.Price),
+                "price_desc" => productWithCategory.OrderByDescending(p => p.Product.Price),
+                "Category" => productWithCategory.OrderBy(p => p.ProductCategory.Title),
+                "category_desc" => productWithCategory.OrderByDescending(p => p.ProductCategory.Title),
+                _ => productWithCategory.OrderBy(p => p.Product.Title),
+            };
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                products = products.Where(
-                    p => p.Title.Contains(searchString) ||
-                    p.Description.Contains(searchString)
+                productWithCategory = productWithCategory.Where(
+                    p => p.Product.Title.Contains(searchString) ||
+                    p.Product.Description.Contains(searchString) ||
+                    p.ProductCategory.Title.Contains(searchString)
                     );
             }
 
-            products = sortOrder switch
-            {
-                "name_desc" => products.OrderByDescending(p => p.Title),
-                "SKU" => products.OrderBy(p => p.Code),
-                "sku_desc" => products.OrderByDescending(p => p.Code),
-                "Price" => products.OrderBy(p => p.Price),
-                "price_desc" => products.OrderByDescending(p => p.Price),
-                _ => products.OrderBy(p => p.Title),
-            };
+            return View(await productWithCategory.AsNoTracking().ToListAsync());
 
-            return View(await products.AsNoTracking().ToListAsync());
         }
 
         /// <summary>
         /// GET: Products/Create
         /// </summary>
         /// <returns>Product entry form</returns>
-        public IActionResult Create() => View();
+        public IActionResult Create()
+        {
+            ViewBag.selectListItems = m_selectListItems;
+
+            return View();
+        }
 
         /// <summary>
         /// POST: Products/Create
@@ -75,7 +99,7 @@ namespace WebShopInventory.Controllers
         /// <returns>A new product</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Code,Title,Description,Stock,Price,ImagePath,ImageFile,Timestamp")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Code,Title,Description,Stock,Price,ImagePath,ImageFile,Timestamp,ProductCategoryId")] Product product)
         {
             if (await SkuExists(product.Code))
             {
@@ -89,6 +113,8 @@ namespace WebShopInventory.Controllers
                 await m_context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.selectListItems = m_selectListItems;
 
             return View(product);
         }
@@ -108,6 +134,8 @@ namespace WebShopInventory.Controllers
             if (product == null)
                 return NotFound();
 
+            ViewBag.selectListItems = m_selectListItems;
+
             return View(product);
         }
 
@@ -121,7 +149,7 @@ namespace WebShopInventory.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, [Bind("Id,Code,Title,Description,Stock,Price,ImagePath,ImageFile,Timestamp")] Product product)
+        public async Task<IActionResult> Update(int id, [Bind("Id,Code,Title,Description,Stock,Price,ImagePath,ImageFile,Timestamp,ProductCategoryId")] Product product)
         {
             if (id != product.Id)
                 return NotFound();
@@ -138,9 +166,7 @@ namespace WebShopInventory.Controllers
                     if (product.ImageFile != null)
                     {
                         product.ImagePath = await GetImagePath(product);
-                    }
-
-                  
+                    }                  
 
                     m_context.Products.Update(product);
                     await m_context.SaveChangesAsync();
@@ -179,7 +205,11 @@ namespace WebShopInventory.Controllers
             if (product == null)
                 return NotFound();
 
-            return View(product);
+            var category = await m_context.ProductCategories.FirstOrDefaultAsync(c => c.Id == product.ProductCategoryId);
+
+            var productviewmodel = new ProductViewModel { Product = product, ProductCategory = category };
+
+            return View(productviewmodel);
         }
 
         /// <summary>
@@ -213,13 +243,21 @@ namespace WebShopInventory.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            return View(product);
+            var category = await m_context.ProductCategories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == product.ProductCategoryId);
+
+            var productviewmodel = new ProductViewModel { Product = product, ProductCategory = category };
+
+            return View(productviewmodel);
         }
 
         private async Task<bool> ProductExists(int id) =>
             await m_context.Products.AnyAsync(e => e.Id == id);
+
         private async Task<bool> SkuExists(string code) =>
             await m_context.Products.AnyAsync(e => e.Code == code);
+
         private async Task<int?> FindIdBySku(string code)
         {
             var p = await m_context.Products.AsNoTracking().FirstOrDefaultAsync(e => e.Code == code);

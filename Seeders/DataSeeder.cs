@@ -11,12 +11,13 @@ namespace WebShopInventory.Seeders
 {
     public static class DataSeeder
     {
-        public async static Task Seed(IApplicationBuilder app)
+        public async static Task SeedProducts(IApplicationBuilder app)
         {
-            var DummyData = new List<Product>()
+            var DummyDataForProducts = new List<Product>()
             {
                 new Product() {
                     Code="MD-55501",
+                    ProductCategoryId=1,
                     Title = "WD-40 200ml",
                     Description="Etkili pas sökücü",
                     Stock=50, Price=44.10,
@@ -26,18 +27,46 @@ namespace WebShopInventory.Seeders
 
                 new Product() {
                     Code="MD-55502",
+                    ProductCategoryId=1,
                     Title = "Einhell Tc-Gg 30",
                     Description="Silikon Mum Tabancası 30 Watt",
                     Stock=10, Price=149.00, ImagePath="MD-55502.jpg",
                     Timestamp=BitConverter.GetBytes(DateTime.Now.Ticks)
                 },
-                new Product() { Code="MD-55503",
+                new Product() { 
+                    Code="MD-55503",
+                    ProductCategoryId=1,
                     Title = "Ersa Proalet",
                     Description="Silikon Tabancası Plastik",
                     Stock=30, Price=15.98,
                     ImagePath="MD-55503.jfif",
                     Timestamp=BitConverter.GetBytes(DateTime.Now.Ticks)
                 },
+            };           
+
+            var context = app
+                .ApplicationServices
+                .CreateScope()
+                .ServiceProvider
+                .GetService<ApplicationDbContext>();
+
+            if (!await context.Products.AnyAsync())
+            {
+                await context.Products.AddRangeAsync(DummyDataForProducts);                
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async static Task SeedProductsCategories(IApplicationBuilder app)
+        {     
+            var DummyDataForProductCategory = new List<ProductCategory>()
+            {
+                new ProductCategory() {
+                    ParentCategoryId = 1,
+                    Title = "Hırdavat",
+                    Slug = "hirdavat",
+                    Timestamp=BitConverter.GetBytes(DateTime.Now.Ticks)
+                }
             };
 
             var context = app
@@ -46,11 +75,10 @@ namespace WebShopInventory.Seeders
                 .ServiceProvider
                 .GetService<ApplicationDbContext>();
 
-            await context.Database.MigrateAsync();
 
             if (!await context.Products.AnyAsync())
             {
-                await context.Products.AddRangeAsync(DummyData);
+                await context.ProductCategories.AddRangeAsync(DummyDataForProductCategory);
                 await context.SaveChangesAsync();
             }
         }

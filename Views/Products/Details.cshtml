@@ -1,52 +1,59 @@
-﻿@model WebShopInventory.Models.Product
+﻿@model WebShopInventory.Models.ViewModels.ProductViewModel
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>@(Model.Title) Details</h1>
+<h1>@(Model.Product.Title) Details</h1>
 
 <div>
-     <a class="btn btn-outline-success me-2" asp-action="Index">< Back to List</a>  <a class="btn btn-outline-success me-2" asp-action="Update" asp-route-id="@Model.Id">Edit</a>  <a class="btn btn-outline-success me-2" asp-action="Create" asp-route-id="@Model.Id">Add New</a>
+     <a class="btn btn-outline-success me-2" asp-action="Index">< Back to List</a>  
+     <a class="btn btn-outline-success me-2" asp-action="Update" asp-route-id="@Model.Product.Id">Edit</a>  
+     <a class="btn btn-outline-success me-2" asp-action="Create" asp-route-id="@Model.Product.Id">Add New</a>
     <hr />
     <div class="container">
         <div class="row">
             <div class="col-sm-4">
-                <img src="@("~/uploads/" + Model.ImagePath)" asp-append-version="true" width="100%" />
+                <img src="@("~/uploads/" + Model.Product.ImagePath)" asp-append-version="true" width="100%" />
             </div>
-            <div class="col-sm-8">
                 <dl class="row">
                     <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.Code)
+                        @Html.DisplayNameFor(model => model.Product.Code)
                     </dt>
                     <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.Code)
+                        @Html.DisplayFor(model => model.Product.Code)
                     </dd>
                     <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.Stock)
+                        @Html.DisplayNameFor(model => model.Product.Stock)
                     </dt>
                     <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.Stock)
+                        @Html.DisplayFor(model => model.Product.Stock)
                     </dd>
                     <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.Price)
+                        @Html.DisplayNameFor(model => model.Product.Price)
                     </dt>
                     <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.Price)
-                    </dd>        
+                        @Html.DisplayFor(model => model.Product.Price)
+                    </dd>  
+                     <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.ProductCategory.Title)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.ProductCategory.Title)
+                    </dd> 
                 </dl>                
             </div>
         </div>
         <hr />
         <div class="row">
             <div class="col-sm-10">
-            <strong>@Html.DisplayNameFor(model => model.Description)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Product.Description)</strong>
             </div>
         </div>
         <hr />
         <div class="row">
             <div class="col-sm-12">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Product.Description)
             </div>
         </div>
     </div>  

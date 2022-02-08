@@ -33,7 +33,8 @@ namespace WebShopInventory
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                _ = DataSeeder.Seed(app);
+                _ = DataSeeder.SeedProductsCategories(app);
+                _ = DataSeeder.SeedProducts(app);
             }
             else
             {
